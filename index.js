@@ -48,6 +48,7 @@ const updateUI = (hourlyWeatherData) => {
 
         // Ajouter toutes les informations au conteneur
         const données = document.createElement('div');
+        données.classList.add('weather-info'); // Ajoute la classe pour l'animation
         données.innerHTML = `
              <p>Temperature à l'heure actuelle : <i class="fas fa-thermometer-half"></i> ${temperatureAtTargetTime} °C.</p>
             <p>Vitesse du vent à l'heure actuelle : <i class="fas fa-wind"></i> ${windSpeedAtTargetTime} km/h.</p>
