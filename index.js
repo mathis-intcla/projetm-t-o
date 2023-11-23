@@ -49,10 +49,10 @@ const updateUI = (hourlyWeatherData) => {
         // Ajouter toutes les informations au conteneur
         const données = document.createElement('div');
         données.innerHTML = `
-            <p>Temperature à l'heure actuelle : ${temperatureAtTargetTime} °C.</p>
-            <p>Vitesse du vent à l'heure actuelle : ${windSpeedAtTargetTime} km/h.</p>
-            <p>Humidité à l'heure actuelle : ${humidityAtTargetTime} %.</p>
-            <p>Précipitations à l'heure actuelle : ${precipitationAtTargetTime} mm.</p>
+             <p>Temperature à l'heure actuelle : <i class="fas fa-thermometer-half"></i> ${temperatureAtTargetTime} °C.</p>
+            <p>Vitesse du vent à l'heure actuelle : <i class="fas fa-wind"></i> ${windSpeedAtTargetTime} km/h.</p>
+            <p>Humidité à l'heure actuelle : <i class="fas fa-tint"></i> ${humidityAtTargetTime} %.</p>
+            <p>Précipitations à l'heure actuelle : <i class="fas fa-cloud-showers-heavy"></i> ${precipitationAtTargetTime} mm.</p>
         `;
 
         // Ajouter l'élément de données au conteneur principal
@@ -64,10 +64,10 @@ const updateUI = (hourlyWeatherData) => {
     const données = document.createElement('div');
     données.classList.add('weather-data');
     données.innerHTML = `
-        <p><i class="fa-solid fa-temperature-quarter"></i> Temperature: ${temperatureAtTargetTime} °C</p>
-        <p><i class="fas fa-wind"></i> Wind Speed: ${windSpeedAtTargetTime} km/h</p>
-        <p><i class="fas fa-tint"></i> Humidity: ${humidityAtTargetTime} %</p>
-        <p><i class="fas fa-cloud-showers-heavy"></i> Precipitation: ${precipitationAtTargetTime} mm</p>
+        <p> Temperature: ${temperatureAtTargetTime} °C</p>
+        <p> Wind Speed: ${windSpeedAtTargetTime} km/h</p>
+        <p> Humidity: ${humidityAtTargetTime} %</p>
+        <p> Precipitation: ${precipitationAtTargetTime} mm</p>
     `;
 
     // ... (code existant)
