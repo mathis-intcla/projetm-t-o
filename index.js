@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const getWeatherForecast = async (latitude, longitude) => {
-    const apiUrl = `https://api.open-meteo.com/v1/meteofrance?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m`;
+    const apiUrl = `https://api.open-meteo.com/v1/meteofrance?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin`;
 
     try {
         const response = await axios.get(apiUrl);
@@ -38,14 +38,18 @@ const updateUI = (hourlyWeatherData) => {
         const windSpeedAtTargetTime = hourlyWeatherData.wind_speed_10m[currentHour];
         const humidityAtTargetTime = hourlyWeatherData.relative_humidity_2m[currentHour];
         const precipitationAtTargetTime = hourlyWeatherData.precipitation[currentHour];
-
+        const temperature_2m_max = Math.max(...hourlyWeatherData.temperature_2m);
+        const temperature_2m_min = Math.min(...hourlyWeatherData.temperature_2m);
         const données = document.createElement('div');
         données.classList.add('weather-info');
         données.innerHTML = `
             <p>Temperature à l'heure actuelle : <i class="fas fa-thermometer-half"></i> ${temperatureAtTargetTime} °C.</p>
+            <p>Température maximale : <i class="fas fa-temperature-high"></i> ${temperature_2m_max} °C.</p>
+            <p>Température minimale : <i class="fas fa-temperature-low"></i> ${temperature_2m_min} °C.</p>
             <p>Vitesse du vent à l'heure actuelle : <i class="fas fa-wind"></i> ${windSpeedAtTargetTime} km/h.</p>
             <p>Humidité à l'heure actuelle : <i class="fas fa-tint"></i> ${humidityAtTargetTime} %.</p>
             <p>Précipitations à l'heure actuelle : <i class="fas fa-cloud-showers-heavy"></i> ${precipitationAtTargetTime} mm.</p>
+         
         `;
 
         weatherContainer.appendChild(données);
@@ -102,14 +106,4 @@ setInterval(() => {
         });
 }, 24 * 60 * 60 * 1000);
 
-const updateClock = () => {
-    const clockElement = document.getElementById('clock');
-    if (clockElement) {
-        const currentDateTime = new Date().toLocaleString('fr-FR', { hour: 'numeric', minute: 'numeric', second: 'numeric' });
-        clockElement.innerText = currentDateTime;
-    }
-};
-
-// Mettre à jour l'horloge toutes les secondes
-setInterval(updateClock, 1000);
 
