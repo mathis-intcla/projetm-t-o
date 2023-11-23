@@ -101,3 +101,15 @@ setInterval(() => {
             console.error('Erreur lors de la récupération des coordonnées:', error);
         });
 }, 24 * 60 * 60 * 1000);
+
+const updateClock = () => {
+    const clockElement = document.getElementById('clock');
+    if (clockElement) {
+        const currentDateTime = new Date().toLocaleString('fr-FR', { hour: 'numeric', minute: 'numeric', second: 'numeric' });
+        clockElement.innerText = currentDateTime;
+    }
+};
+
+// Mettre à jour l'horloge toutes les secondes
+setInterval(updateClock, 1000);
+

@@ -1,3 +1,11 @@
+/* style.css */
+.clock {
+    text-align: center;
+    font-size: 24px; /* Ajuste la taille de la police selon tes préférences */
+    color: #555; /* Couleur du texte de l'horloge */
+    margin-bottom: 20px; /* Espacement en bas de l'horloge */
+}
+
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f5f5f5;
@@ -28,7 +36,6 @@ h1 {
     margin: 10px 0;
     font-size: 16px;
 }
-/* style.css */
 
 @keyframes fadeIn {
     from {
@@ -44,6 +51,3 @@ h1 {
 .weather-info {
     animation: fadeIn 0.5s ease-in-out;
 }
-
-
-/* Ajoute plus de styles au besoin */
