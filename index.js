@@ -1,14 +1,11 @@
-// index.js
 import axios from 'axios';
 
-const getWeatherForecast = async () => {
-    const apiUrl = 'https://api.open-meteo.com/v1/meteofrance?latitude=45.4339&longitude=4.39&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m';
-
+const getWeatherForecast = async (latitude, longitude) => {
+    const apiUrl = `https://api.open-meteo.com/v1/meteofrance?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m`;
 
     try {
         const response = await axios.get(apiUrl);
 
-        // Update the UI with the current weather details
         if (response.data && response.data.hourly) {
             updateUI(response.data.hourly);
         } else {
@@ -20,21 +17,16 @@ const getWeatherForecast = async () => {
 };
 
 const updateUI = (hourlyWeatherData) => {
-    // Clear previous content
     const weatherContainer = document.getElementById('weather-container');
     weatherContainer.innerHTML = '';
 
-    // Check if the 'cityName' element exists before attempting to update it
     const cityNameElement = document.getElementById('cityName');
     if (cityNameElement) {
-        // Utiliser directement le nom de la ville (Saint-Étienne)
         cityNameElement.innerText = 'Saint-Étienne';
     }
 
-    // Utiliser la température actuelle et l'heure actuelle
-    const currentHour = new Date().getHours(); // Heure actuelle
+    const currentHour = new Date().getHours();
 
-    // Vérifier si les données nécessaires sont présentes
     if (
         hourlyWeatherData.temperature_2m &&
         hourlyWeatherData.wind_speed_10m &&
@@ -46,17 +38,15 @@ const updateUI = (hourlyWeatherData) => {
         const humidityAtTargetTime = hourlyWeatherData.relative_humidity_2m[currentHour];
         const precipitationAtTargetTime = hourlyWeatherData.precipitation[currentHour];
 
-        // Ajouter toutes les informations au conteneur
         const données = document.createElement('div');
-        données.classList.add('weather-info'); // Ajoute la classe pour l'animation
+        données.classList.add('weather-info');
         données.innerHTML = `
-             <p>Temperature à l'heure actuelle : <i class="fas fa-thermometer-half"></i> ${temperatureAtTargetTime} °C.</p>
+            <p>Temperature à l'heure actuelle : <i class="fas fa-thermometer-half"></i> ${temperatureAtTargetTime} °C.</p>
             <p>Vitesse du vent à l'heure actuelle : <i class="fas fa-wind"></i> ${windSpeedAtTargetTime} km/h.</p>
             <p>Humidité à l'heure actuelle : <i class="fas fa-tint"></i> ${humidityAtTargetTime} %.</p>
             <p>Précipitations à l'heure actuelle : <i class="fas fa-cloud-showers-heavy"></i> ${precipitationAtTargetTime} mm.</p>
         `;
 
-        // Ajouter l'élément de données au conteneur principal
         weatherContainer.appendChild(données);
     } else {
         console.error('Données météorologiques manquantes ou malformatées:', hourlyWeatherData);
@@ -70,12 +60,19 @@ const updateUI = (hourlyWeatherData) => {
         <p> Humidity: ${humidityAtTargetTime} %</p>
         <p> Precipitation: ${precipitationAtTargetTime} mm</p>
     `;
-
-    // ... (code existant)
 };
 
-// Initial weather forecast for Saint-Étienne
+const getRandomCoordinates = () => {
+    const randomLatitude = Math.random() * (90 - (-90)) + (-90);
+    const randomLongitude = Math.random() * (180 - (-180)) + (-180);
+    return { latitude: randomLatitude, longitude: randomLongitude };
+};
+
+document.getElementById('random-button').addEventListener('click', () => {
+    const { latitude, longitude } = getRandomCoordinates();
+    getWeatherForecast(latitude, longitude);
+});
+
 getWeatherForecast();
 
-// Définir l'intervalle pour actualiser la météo toutes les 24 heures
-setInterval(getWeatherForecast, 24 * 60 * 60 * 1000); // 24 heures en millisecondes
+setInterval(getWeatherForecast, 24 * 60 * 60 * 1000);
