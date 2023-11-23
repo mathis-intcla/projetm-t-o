@@ -48,11 +48,12 @@ const updateUI = (hourlyWeatherData) => {
 
         // Ajouter toutes les informations au conteneur
         const données = document.createElement('div');
+        données.classList.add('weather-info'); // Ajoute la classe pour l'animation
         données.innerHTML = `
-            <p>Temperature à l'heure actuelle : ${temperatureAtTargetTime} °C.</p>
-            <p>Vitesse du vent à l'heure actuelle : ${windSpeedAtTargetTime} km/h.</p>
-            <p>Humidité à l'heure actuelle : ${humidityAtTargetTime} %.</p>
-            <p>Précipitations à l'heure actuelle : ${precipitationAtTargetTime} mm.</p>
+             <p>Temperature à l'heure actuelle : <i class="fas fa-thermometer-half"></i> ${temperatureAtTargetTime} °C.</p>
+            <p>Vitesse du vent à l'heure actuelle : <i class="fas fa-wind"></i> ${windSpeedAtTargetTime} km/h.</p>
+            <p>Humidité à l'heure actuelle : <i class="fas fa-tint"></i> ${humidityAtTargetTime} %.</p>
+            <p>Précipitations à l'heure actuelle : <i class="fas fa-cloud-showers-heavy"></i> ${precipitationAtTargetTime} mm.</p>
         `;
 
         // Ajouter l'élément de données au conteneur principal
@@ -60,6 +61,17 @@ const updateUI = (hourlyWeatherData) => {
     } else {
         console.error('Données météorologiques manquantes ou malformatées:', hourlyWeatherData);
     }
+
+    const données = document.createElement('div');
+    données.classList.add('weather-data');
+    données.innerHTML = `
+        <p> Temperature: ${temperatureAtTargetTime} °C</p>
+        <p> Wind Speed: ${windSpeedAtTargetTime} km/h</p>
+        <p> Humidity: ${humidityAtTargetTime} %</p>
+        <p> Precipitation: ${precipitationAtTargetTime} mm</p>
+    `;
+
+    // ... (code existant)
 };
 
 // Initial weather forecast for Saint-Étienne
