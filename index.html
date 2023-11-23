@@ -7,10 +7,19 @@
   <title>Projet Météo - INTERNICOLA FREDRIC</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://kit.fontawesome.com/ba504e0e73.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 </head>
 <body>
 <h1>Météo Saint-Étienne</h1>
+<!-- Ajoute ce champ de saisie de la ville dans ton fichier HTML -->
+<form id="location-form">
+  <!-- Vos champs de formulaire ici -->
+  <label for="city">Ville:</label>
+  <input type="text" id="city" name="city">
+  <button type="submit">Rechercher</button>
+</form>
 <div id="weather-container" class="weather-container"></div>
 <script src="https://kit.fontawesome.com/ba504e0e73.js" crossorigin="anonymous"></script>
 <script src="dist/index.js"></script>
