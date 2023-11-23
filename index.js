@@ -1,37 +1,10 @@
+// index.js
 import axios from 'axios';
 
-// Déplacer la déclaration de getRandomCoordinates à l'extérieur du module
-const getRandomCoordinates = () => {
-    const randomLatitude = Math.random() * (90 - (-90)) + (-90);
-    const randomLongitude = Math.random() * (180 - (-180)) + (-180);
-    return { latitude: randomLatitude, longitude: randomLongitude };
-};
-
-const getCityName = async (latitude, longitude) => {
-    const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`;
+const getWeatherForecast = async (latitude, longitude) => {
+    const apiUrl = `https://api.open-meteo.com/v1/meteofrance?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m`;
 
     try {
-        const response = await axios.get(nominatimUrl);
-
-        if (response.data && response.data.address && response.data.address.city) {
-            return response.data.address.city;
-        } else {
-            throw new Error('City name not found');
-        }
-    } catch (error) {
-        console.error('Error fetching city name:', error);
-    }
-};
-
-const getWeatherForecast = async () => {
-    const { latitude, longitude } = getRandomCoordinates();
-
-    try {
-        const cityName = await getCityName(latitude, longitude);
-        updateCityName(cityName);
-
-        const apiUrl = `https://api.open-meteo.com/v1/meteofrance?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m`;
-
         const response = await axios.get(apiUrl);
 
         if (response.data && response.data.hourly) {
@@ -44,21 +17,87 @@ const getWeatherForecast = async () => {
     }
 };
 
-const updateCityName = (cityName) => {
-    // Mettez à jour le DOM avec le nom de la ville
+const updateUI = (hourlyWeatherData) => {
+    const weatherContainer = document.getElementById('weather-container');
+    weatherContainer.innerHTML = '';
+
     const cityNameElement = document.getElementById('cityName');
     if (cityNameElement) {
-        cityNameElement.innerText = cityName;
+        cityNameElement.innerText = 'Saint-Étienne';
+    }
+
+    const currentHour = new Date().getHours();
+
+    if (
+        hourlyWeatherData.temperature_2m &&
+        hourlyWeatherData.wind_speed_10m &&
+        hourlyWeatherData.relative_humidity_2m &&
+        hourlyWeatherData.precipitation
+    ) {
+        const temperatureAtTargetTime = hourlyWeatherData.temperature_2m[currentHour];
+        const windSpeedAtTargetTime = hourlyWeatherData.wind_speed_10m[currentHour];
+        const humidityAtTargetTime = hourlyWeatherData.relative_humidity_2m[currentHour];
+        const precipitationAtTargetTime = hourlyWeatherData.precipitation[currentHour];
+
+        const données = document.createElement('div');
+        données.classList.add('weather-info');
+        données.innerHTML = `
+            <p>Temperature à l'heure actuelle : <i class="fas fa-thermometer-half"></i> ${temperatureAtTargetTime} °C.</p>
+            <p>Vitesse du vent à l'heure actuelle : <i class="fas fa-wind"></i> ${windSpeedAtTargetTime} km/h.</p>
+            <p>Humidité à l'heure actuelle : <i class="fas fa-tint"></i> ${humidityAtTargetTime} %.</p>
+            <p>Précipitations à l'heure actuelle : <i class="fas fa-cloud-showers-heavy"></i> ${precipitationAtTargetTime} mm.</p>
+        `;
+
+        weatherContainer.appendChild(données);
+    } else {
+        console.error('Données météorologiques manquantes ou malformatées:', hourlyWeatherData);
     }
 };
 
-const updateUI = (hourlyWeatherData) => {
-    // Le reste du code pour mettre à jour l'interface utilisateur
-    // ...
+// Fonction pour utiliser Nominatim pour obtenir les coordonnées de la ville
+const getCoordinates = async (city) => {
+    const corsAnywhereUrl = 'https://cors-anywhere.herokuapp.com/';
+    const nominatimUrl = `${corsAnywhereUrl}https://nominatim.openstreetmap.org/search/${encodeURIComponent(city)}?format=json`;
+
+    try {
+        const response = await axios.get(nominatimUrl);
+
+        if (response.data.length > 0) {
+            const { lat, lon } = response.data[0];
+            return { lat, lon };
+        } else {
+            throw new Error('Coordonnées introuvables pour la ville spécifiée:', city);
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération des coordonnées:', error);
+        throw error;
+    }
 };
 
-// Initial weather forecast
-getWeatherForecast();
+// Gestionnaire d'événement pour le formulaire
+document.getElementById('location-form').addEventListener('submit', async function (event) {
+    event.preventDefault();
 
-// Définir l'intervalle pour actualiser la météo toutes les 24 heures
-setInterval(getWeatherForecast, 24 * 60 * 60 * 1000); // 24 heures en millisecondes
+    const city = document.getElementById('city').value;
+
+    try {
+        const { lat, lon } = await getCoordinates(city);
+        getWeatherForecast(lat, lon);
+    } catch (error) {
+        console.error(error.message);
+    }
+});
+
+getWeatherForecast(45.4339, 4.39);
+
+setInterval(() => {
+    const lastCity = document.getElementById('city').value || 'Saint-Étienne';
+
+    getCoordinates(lastCity)
+        .then(({ lat, lon }) => {
+            getWeatherForecast(lat, lon);
+        })
+        .catch((error) => {
+            console.error('Erreur lors de la récupération des coordonnées:', error);
+        });
+}, 24 * 60 * 60 * 1000);
