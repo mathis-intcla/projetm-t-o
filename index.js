@@ -1,9 +1,37 @@
 import axios from 'axios';
 
-const getWeatherForecast = async (latitude, longitude) => {
-    const apiUrl = `https://api.open-meteo.com/v1/meteofrance?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m`;
+// Déplacer la déclaration de getRandomCoordinates à l'extérieur du module
+const getRandomCoordinates = () => {
+    const randomLatitude = Math.random() * (90 - (-90)) + (-90);
+    const randomLongitude = Math.random() * (180 - (-180)) + (-180);
+    return { latitude: randomLatitude, longitude: randomLongitude };
+};
+
+const getCityName = async (latitude, longitude) => {
+    const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`;
 
     try {
+        const response = await axios.get(nominatimUrl);
+
+        if (response.data && response.data.address && response.data.address.city) {
+            return response.data.address.city;
+        } else {
+            throw new Error('City name not found');
+        }
+    } catch (error) {
+        console.error('Error fetching city name:', error);
+    }
+};
+
+const getWeatherForecast = async () => {
+    const { latitude, longitude } = getRandomCoordinates();
+
+    try {
+        const cityName = await getCityName(latitude, longitude);
+        updateCityName(cityName);
+
+        const apiUrl = `https://api.open-meteo.com/v1/meteofrance?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m`;
+
         const response = await axios.get(apiUrl);
 
         if (response.data && response.data.hourly) {
@@ -16,63 +44,21 @@ const getWeatherForecast = async (latitude, longitude) => {
     }
 };
 
-const updateUI = (hourlyWeatherData) => {
-    const weatherContainer = document.getElementById('weather-container');
-    weatherContainer.innerHTML = '';
-
+const updateCityName = (cityName) => {
+    // Mettez à jour le DOM avec le nom de la ville
     const cityNameElement = document.getElementById('cityName');
     if (cityNameElement) {
-        cityNameElement.innerText = 'Saint-Étienne';
+        cityNameElement.innerText = cityName;
     }
-
-    const currentHour = new Date().getHours();
-
-    if (
-        hourlyWeatherData.temperature_2m &&
-        hourlyWeatherData.wind_speed_10m &&
-        hourlyWeatherData.relative_humidity_2m &&
-        hourlyWeatherData.precipitation
-    ) {
-        const temperatureAtTargetTime = hourlyWeatherData.temperature_2m[currentHour];
-        const windSpeedAtTargetTime = hourlyWeatherData.wind_speed_10m[currentHour];
-        const humidityAtTargetTime = hourlyWeatherData.relative_humidity_2m[currentHour];
-        const precipitationAtTargetTime = hourlyWeatherData.precipitation[currentHour];
-
-        const données = document.createElement('div');
-        données.classList.add('weather-info');
-        données.innerHTML = `
-            <p>Temperature à l'heure actuelle : <i class="fas fa-thermometer-half"></i> ${temperatureAtTargetTime} °C.</p>
-            <p>Vitesse du vent à l'heure actuelle : <i class="fas fa-wind"></i> ${windSpeedAtTargetTime} km/h.</p>
-            <p>Humidité à l'heure actuelle : <i class="fas fa-tint"></i> ${humidityAtTargetTime} %.</p>
-            <p>Précipitations à l'heure actuelle : <i class="fas fa-cloud-showers-heavy"></i> ${precipitationAtTargetTime} mm.</p>
-        `;
-
-        weatherContainer.appendChild(données);
-    } else {
-        console.error('Données météorologiques manquantes ou malformatées:', hourlyWeatherData);
-    }
-
-    const données = document.createElement('div');
-    données.classList.add('weather-data');
-    données.innerHTML = `
-        <p> Temperature: ${temperatureAtTargetTime} °C</p>
-        <p> Wind Speed: ${windSpeedAtTargetTime} km/h</p>
-        <p> Humidity: ${humidityAtTargetTime} %</p>
-        <p> Precipitation: ${precipitationAtTargetTime} mm</p>
-    `;
 };
 
-const getRandomCoordinates = () => {
-    const randomLatitude = Math.random() * (90 - (-90)) + (-90);
-    const randomLongitude = Math.random() * (180 - (-180)) + (-180);
-    return { latitude: randomLatitude, longitude: randomLongitude };
+const updateUI = (hourlyWeatherData) => {
+    // Le reste du code pour mettre à jour l'interface utilisateur
+    // ...
 };
 
-document.getElementById('random-button').addEventListener('click', () => {
-    const { latitude, longitude } = getRandomCoordinates();
-    getWeatherForecast(latitude, longitude);
-});
-
+// Initial weather forecast
 getWeatherForecast();
 
-setInterval(getWeatherForecast, 24 * 60 * 60 * 1000);
+// Définir l'intervalle pour actualiser la météo toutes les 24 heures
+setInterval(getWeatherForecast, 24 * 60 * 60 * 1000); // 24 heures en millisecondes
