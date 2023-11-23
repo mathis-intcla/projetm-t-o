@@ -60,6 +60,17 @@ const updateUI = (hourlyWeatherData) => {
     } else {
         console.error('Données météorologiques manquantes ou malformatées:', hourlyWeatherData);
     }
+
+    const données = document.createElement('div');
+    données.classList.add('weather-data');
+    données.innerHTML = `
+        <p><i class="fa-solid fa-temperature-quarter"></i> Temperature: ${temperatureAtTargetTime} °C</p>
+        <p><i class="fas fa-wind"></i> Wind Speed: ${windSpeedAtTargetTime} km/h</p>
+        <p><i class="fas fa-tint"></i> Humidity: ${humidityAtTargetTime} %</p>
+        <p><i class="fas fa-cloud-showers-heavy"></i> Precipitation: ${precipitationAtTargetTime} mm</p>
+    `;
+
+    // ... (code existant)
 };
 
 // Initial weather forecast for Saint-Étienne
