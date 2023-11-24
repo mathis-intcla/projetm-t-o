@@ -59,7 +59,6 @@ const updateUI = (hourlyWeatherData) => {
     }
 };
 
-// Fonction pour utiliser Nominatim pour obtenir les coordonnées de la ville
 const getCoordinates = async (city) => {
     return cities[city];
 };
@@ -129,34 +128,8 @@ document.getElementById('btnParis').addEventListener('click', function () {
     changeCity('Paris');
 });
 
-
-// Sélectionnez le conteneur des boutons
-const buttonsContainer = document.getElementById('buttons-container');
-
-// Sélectionnez chaque bouton par son ID
-const btnSaintEtienne = document.getElementById('btnSaintEtienne');
-const btnLyon = document.getElementById('btnLyon');
-const btnMarseille = document.getElementById('btnMarseille');
-const btnParis = document.getElementById('btnParis');
-
-// Appliquez les styles au conteneur des boutons
-buttonsContainer.style.display = 'flex'; // Utilisez flexbox pour aligner les boutons
-buttonsContainer.style.justifyContent = 'center'; // Centre les boutons horizontalement
-
-// Fonction pour appliquer les styles à chaque bouton
-const applyStyles = (button, bgColor) => {
-    button.style.width = '100px'; // Ajustez la largeur selon vos préférences
-    button.style.height = '100px'; // Ajustez la hauteur selon vos préférences
-    button.style.borderRadius = '50%'; // Rend le bouton rond
-    button.style.backgroundColor = bgColor;
-    button.style.cursor = 'pointer';
-    button.style.textAlign = 'center';
-    button.style.lineHeight = '100px'; // Centre le texte verticalement
-    button.style.margin = '0 10px'; // Ajoute une marge entre les boutons
-};
-
-// Appelez la fonction pour chaque bouton avec la couleur appropriée
-applyStyles(btnSaintEtienne, '#66c284'); // Vert pastel
-applyStyles(btnLyon, '#ffb347'); // Orange pastel
-applyStyles(btnMarseille, '#83c6e0'); // Bleu pastel
-applyStyles(btnParis, '#ffcccb'); // Rose pastel
+// Ajouter des classes aux boutons pour les styles
+document.getElementById('btnSaintEtienne').classList.add('round-button', 'gray-button');
+document.getElementById('btnLyon').classList.add('round-button', 'gray-button');
+document.getElementById('btnMarseille').classList.add('round-button', 'gray-button');
+document.getElementById('btnParis').classList.add('round-button', 'gray-button');
