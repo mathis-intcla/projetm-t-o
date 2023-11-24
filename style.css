@@ -52,11 +52,35 @@ h1 {
     animation: fadeIn 0.5s ease-in-out;
 }
 
-/* Ajoutez ce style pour vos boutons */
-.city-button {
-    margin-right: 10px;
+/* Ajoutez ce CSS dans votre fichier de style ou directement dans la balise <style> du HTML */
+
+/* Ajoutez ce CSS dans votre fichier de style ou directement dans la balise <style> du HTML */
+
+.city-btn {
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+    width: 50px; /* Ajustez la largeur et la hauteur selon vos préférences */
+    height: 50px;
+    border-radius: 50%; /* Rend le bouton rond */
     cursor: pointer;
-    padding: 5px 10px;
-    font-size: 16px;
 }
+
+#btnSaintEtienne {
+    background-color: #66c284; /* Vert pastel */
+}
+
+#btnLyon {
+    background-color: #ffb347; /* Orange pastel */
+}
+
+#btnMarseille {
+    background-color: #83c6e0; /* Bleu pastel */
+}
+
+#btnParis {
+    background-color: #ffcccb; /* Rose pastel */
+}
+
+
 
