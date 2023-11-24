@@ -12,34 +12,26 @@ const cities = {
 
 
 
-const getWeatherForecast = async (latitude, longitude, city) => {
+const getWeatherForecast = async (latitude, longitude) => {
     const apiUrl = `https://api.open-meteo.com/v1/meteofrance?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin`;
 
     try {
         const response = await axios.get(apiUrl);
 
         if (response.data && response.data.hourly) {
-            updateUI(response.data.hourly);
+            return response.data.hourly;
         } else {
             console.error('Invalid weather data format:', response.data);
+            return null;
         }
     } catch (error) {
         console.error('Error fetching weather data:', error);
-    }
-    try {
-        const response = await axios.get(apiUrl);
-
-        if (response.data && response.data.hourly) {
-            updateUI(response.data.hourly, city); // Passer la ville actuelle à la fonction
-        } else {
-            console.error('Invalid weather data format:', response.data);
-        }
-    } catch (error) {
-        console.error('Error fetching weather data:', error);
+        return null;
     }
 };
 
-const updateUI = (hourlyWeatherData, city) => {
+
+const updateWeatherUI = (hourlyWeatherData, city) => {
     const weatherContainer = document.getElementById('weather-container');
     weatherContainer.innerHTML = '';
 
@@ -118,13 +110,14 @@ const updateCityName = (city) => {
 const changeCity = async (city) => {
     try {
         const { lat, lon } = await getCoordinates(city);
-        getWeatherForecast(lat, lon);
+        const weatherData = await getWeatherForecast(lat, lon);
+        updateWeatherUI(weatherData, city);
         updateCityName(city);
-        updateUI(null, city); // Passer la ville actuelle à la fonction
     } catch (error) {
         console.error(error.message);
     }
 };
+
 
 
 // Mettez à jour l'horloge toutes les secondes
