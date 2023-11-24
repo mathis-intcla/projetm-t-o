@@ -21,11 +21,6 @@ const updateUI = (hourlyWeatherData) => {
     const weatherContainer = document.getElementById('weather-container');
     weatherContainer.innerHTML = '';
 
-    const cityNameElement = document.getElementById('cityName');
-    if (cityNameElement) {
-        cityNameElement.innerText = 'Saint-Étienne';
-    }
-
     const currentHour = new Date().getHours();
 
     if (
@@ -49,7 +44,6 @@ const updateUI = (hourlyWeatherData) => {
             <p>Vitesse du vent à l'heure actuelle : <i class="fas fa-wind"></i> ${windSpeedAtTargetTime} km/h.</p>
             <p>Humidité à l'heure actuelle : <i class="fas fa-tint"></i> ${humidityAtTargetTime} %.</p>
             <p>Précipitations à l'heure actuelle : <i class="fas fa-cloud-showers-heavy"></i> ${precipitationAtTargetTime} mm.</p>
-         
         `;
 
         weatherContainer.appendChild(données);
@@ -58,7 +52,6 @@ const updateUI = (hourlyWeatherData) => {
     }
 };
 
-// Fonction pour utiliser Nominatim pour obtenir les coordonnées de la ville
 const getCoordinates = async (city) => {
     const corsAnywhereUrl = 'https://cors-anywhere.herokuapp.com/';
     const nominatimUrl = `${corsAnywhereUrl}https://nominatim.openstreetmap.org/search/${encodeURIComponent(city)}?format=json`;
@@ -78,7 +71,6 @@ const getCoordinates = async (city) => {
     }
 };
 
-// Gestionnaire d'événement pour le formulaire
 document.getElementById('location-form').addEventListener('submit', async function (event) {
     event.preventDefault();
 
@@ -87,25 +79,31 @@ document.getElementById('location-form').addEventListener('submit', async functi
     try {
         const { lat, lon } = await getCoordinates(city);
         getWeatherForecast(lat, lon);
+        updateCityName(city);
     } catch (error) {
         console.error(error.message);
     }
 });
 
-getWeatherForecast(45.4339, 4.39);
+const updateCityName = (city) => {
+    const cityNameElement = document.getElementById('cityName');
+    if (cityNameElement) {
+        cityNameElement.innerText = city;
+    }
+};
 
-setInterval(() => {
-    const lastCity = document.getElementById('city').value || 'Saint-Étienne';
+// Ajout de la fonction pour changer la ville
+const changeCity = async (city) => {
+    try {
+        const { lat, lon } = await getCoordinates(city);
+        getWeatherForecast(lat, lon);
+        updateCityName(city);
+    } catch (error) {
+        console.error(error.message);
+    }
+};
 
-    getCoordinates(lastCity)
-        .then(({ lat, lon }) => {
-            getWeatherForecast(lat, lon);
-        })
-        .catch((error) => {
-            console.error('Erreur lors de la récupération des coordonnées:', error);
-        });
-}, 24 * 60 * 60 * 1000);
-
+// Mettez à jour l'horloge toutes les secondes
 const updateClock = () => {
     const clockElement = document.getElementById('clock');
     if (clockElement) {
@@ -114,7 +112,4 @@ const updateClock = () => {
     }
 };
 
-// Mettre à jour l'horloge toutes les secondes
 setInterval(updateClock, 1000);
-
-

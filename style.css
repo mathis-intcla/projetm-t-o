@@ -51,3 +51,12 @@ h1 {
 .weather-info {
     animation: fadeIn 0.5s ease-in-out;
 }
+
+/* Ajoutez ce style pour vos boutons */
+.city-button {
+    margin-right: 10px;
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 16px;
+}
+
