@@ -7,7 +7,9 @@ const cities = {
     'Saint-Étienne': { lat: 45.4339, lon: 4.39 },
     'Lyon': { lat: 45.75, lon: 4.85 },
     'Marseille': { lat: 43.2965, lon: 5.37 },
-    'Paris': { lat: 48.8566, lon: 2.3522 }
+    'Paris': { lat: 48.8566, lon: 2.3522 },
+    'Bourg-en-Bresse': { lat: 46.2058, lon: 5.2258 },
+    'Commelle-Vernay': { lat: 45.9667, lon: 4.05 },
 };
 
 
@@ -68,7 +70,9 @@ const updateWeatherUI = (hourlyWeatherData, city) => {
         'Saint-Étienne': 'url(Images/Saint_Etienne.webp)',
         'Lyon': 'url(Images/Lyon.jpeg)',
         'Marseille': 'url(Images/Marseille.jpg)',
-        'Paris': 'url(Images/Paris.webp)'
+        'Paris': 'url(Images/Paris.webp)',
+        'Bourg-en-Bresse': 'url(Images/Bourg.jpg)',
+        'Commelle-Vernay': 'url(Images/Commelle.jpeg)',
     };
     // Mise à jour de l'image de fond en fonction de la ville
     const body = document.body;
@@ -153,11 +157,21 @@ document.getElementById('btnParis').addEventListener('click', function () {
     changeCity('Paris');
 });
 
+document.getElementById('btnBourgEnBresse').addEventListener('click', function () {
+    changeCity('Bourg-en-Bresse');
+});
+
+document.getElementById('btnCommelleVernay').addEventListener('click', function () {
+    changeCity('Commelle-Vernay');
+});
+
 // Ajouter des classes aux boutons pour les styles
 document.getElementById('btnSaintEtienne').classList.add('round-button', 'gray-button');
 document.getElementById('btnLyon').classList.add('round-button', 'gray-button');
 document.getElementById('btnMarseille').classList.add('round-button', 'gray-button');
 document.getElementById('btnParis').classList.add('round-button', 'gray-button');
+document.getElementById('btnBourgEnBresse').classList.add('round-button', 'gray-button');
+document.getElementById('btnCommelleVernay').classList.add('round-button', 'gray-button');
 
 
 
