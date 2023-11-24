@@ -1,6 +1,13 @@
 // index.js
 import axios from 'axios';
 
+const cities = {
+    'Saint-Étienne': { lat: 45.4339, lon: 4.39 },
+    'Lyon': { lat: 45.75, lon: 4.85 },
+    'Marseille': { lat: 43.2965, lon: 5.37 },
+    'Paris': { lat: 48.8566, lon: 2.3522 }
+};
+
 const getWeatherForecast = async (latitude, longitude) => {
     const apiUrl = `https://api.open-meteo.com/v1/meteofrance?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin`;
 
@@ -20,11 +27,6 @@ const getWeatherForecast = async (latitude, longitude) => {
 const updateUI = (hourlyWeatherData) => {
     const weatherContainer = document.getElementById('weather-container');
     weatherContainer.innerHTML = '';
-
-    const cityNameElement = document.getElementById('cityName');
-    if (cityNameElement) {
-        cityNameElement.innerText = 'Saint-Étienne';
-    }
 
     const currentHour = new Date().getHours();
 
@@ -49,7 +51,6 @@ const updateUI = (hourlyWeatherData) => {
             <p>Vitesse du vent à l'heure actuelle : <i class="fas fa-wind"></i> ${windSpeedAtTargetTime} km/h.</p>
             <p>Humidité à l'heure actuelle : <i class="fas fa-tint"></i> ${humidityAtTargetTime} %.</p>
             <p>Précipitations à l'heure actuelle : <i class="fas fa-cloud-showers-heavy"></i> ${precipitationAtTargetTime} mm.</p>
-         
         `;
 
         weatherContainer.appendChild(données);
@@ -58,27 +59,10 @@ const updateUI = (hourlyWeatherData) => {
     }
 };
 
-// Fonction pour utiliser Nominatim pour obtenir les coordonnées de la ville
 const getCoordinates = async (city) => {
-    const corsAnywhereUrl = 'https://cors-anywhere.herokuapp.com/';
-    const nominatimUrl = `${corsAnywhereUrl}https://nominatim.openstreetmap.org/search/${encodeURIComponent(city)}?format=json`;
-
-    try {
-        const response = await axios.get(nominatimUrl);
-
-        if (response.data.length > 0) {
-            const { lat, lon } = response.data[0];
-            return { lat, lon };
-        } else {
-            throw new Error('Coordonnées introuvables pour la ville spécifiée:', city);
-        }
-    } catch (error) {
-        console.error('Erreur lors de la récupération des coordonnées:', error);
-        throw error;
-    }
+    return cities[city];
 };
 
-// Gestionnaire d'événement pour le formulaire
 document.getElementById('location-form').addEventListener('submit', async function (event) {
     event.preventDefault();
 
@@ -87,25 +71,31 @@ document.getElementById('location-form').addEventListener('submit', async functi
     try {
         const { lat, lon } = await getCoordinates(city);
         getWeatherForecast(lat, lon);
+        updateCityName(city);
     } catch (error) {
         console.error(error.message);
     }
 });
 
-getWeatherForecast(45.4339, 4.39);
+// Ajout de la fonction pour changer la ville
+const changeCity = async (city) => {
+    try {
+        const { lat, lon } = await getCoordinates(city);
+        getWeatherForecast(lat, lon);
+        updateCityName(city);
+    } catch (error) {
+        console.error(error.message);
+    }
+};
 
-setInterval(() => {
-    const lastCity = document.getElementById('city').value || 'Saint-Étienne';
+const updateCityName = (city) => {
+    const cityNameElement = document.getElementById('cityName');
+    if (cityNameElement) {
+        cityNameElement.innerText = city;
+    }
+};
 
-    getCoordinates(lastCity)
-        .then(({ lat, lon }) => {
-            getWeatherForecast(lat, lon);
-        })
-        .catch((error) => {
-            console.error('Erreur lors de la récupération des coordonnées:', error);
-        });
-}, 24 * 60 * 60 * 1000);
-
+// Mettez à jour l'horloge toutes les secondes
 const updateClock = () => {
     const clockElement = document.getElementById('clock');
     if (clockElement) {
@@ -114,7 +104,32 @@ const updateClock = () => {
     }
 };
 
-// Mettre à jour l'horloge toutes les secondes
 setInterval(updateClock, 1000);
 
+// Initialiser la météo pour Saint-Étienne au chargement de la page
+document.addEventListener('DOMContentLoaded', function () {
+    changeCity('Saint-Étienne');
+});
 
+// Ajouter des gestionnaires d'événements pour les boutons de ville
+document.getElementById('btnSaintEtienne').addEventListener('click', function () {
+    changeCity('Saint-Étienne');
+});
+
+document.getElementById('btnLyon').addEventListener('click', function () {
+    changeCity('Lyon');
+});
+
+document.getElementById('btnMarseille').addEventListener('click', function () {
+    changeCity('Marseille');
+});
+
+document.getElementById('btnParis').addEventListener('click', function () {
+    changeCity('Paris');
+});
+
+// Ajouter des classes aux boutons pour les styles
+document.getElementById('btnSaintEtienne').classList.add('round-button', 'gray-button');
+document.getElementById('btnLyon').classList.add('round-button', 'gray-button');
+document.getElementById('btnMarseille').classList.add('round-button', 'gray-button');
+document.getElementById('btnParis').classList.add('round-button', 'gray-button');

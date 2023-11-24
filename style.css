@@ -51,3 +51,44 @@ h1 {
 .weather-info {
     animation: fadeIn 0.5s ease-in-out;
 }
+
+/* Ajoutez ce CSS dans votre fichier de style ou directement dans la balise <style> du HTML */
+
+
+/* style.css */
+.round-button {
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    padding: 20px; /* Ajustez selon vos préférences */
+    display: inline-block; /* Permet au texte d'être centré correctement */
+    transition: background-color 0.3s ease; /* Effet de transition pour le hover */
+}
+
+.gray-button {
+    background-color: #808080; /* Gris */
+    color: #fff; /* Texte en blanc pour contraster */
+    font-size: 16px; /* Ajustez la taille du texte selon vos préférences */
+    border: none;
+}
+
+/* Centrer les boutons horizontalement */
+#buttons-container {
+    text-align: center;
+}
+
+/* Ajouter un peu d'espace entre les boutons */
+.round-button + .round-button {
+    margin-left: 10px;
+}
+
+/* Icônes avec un style flat design */
+.round-button i {
+    font-size: 24px; /* Ajustez la taille de l'icône selon vos préférences */
+}
+
+/* Effet de hover pour les boutons */
+.round-button:hover {
+    background-color: #606060; /* Gris foncé pour le hover */
+}
+
