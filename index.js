@@ -1,12 +1,16 @@
 // index.js
 import axios from 'axios';
 
+
+
 const cities = {
     'Saint-Étienne': { lat: 45.4339, lon: 4.39 },
     'Lyon': { lat: 45.75, lon: 4.85 },
     'Marseille': { lat: 43.2965, lon: 5.37 },
     'Paris': { lat: 48.8566, lon: 2.3522 }
 };
+
+
 
 const getWeatherForecast = async (latitude, longitude) => {
     const apiUrl = `https://api.open-meteo.com/v1/meteofrance?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin`;
@@ -15,16 +19,19 @@ const getWeatherForecast = async (latitude, longitude) => {
         const response = await axios.get(apiUrl);
 
         if (response.data && response.data.hourly) {
-            updateUI(response.data.hourly);
+            return response.data.hourly;
         } else {
             console.error('Invalid weather data format:', response.data);
+            return null;
         }
     } catch (error) {
         console.error('Error fetching weather data:', error);
+        return null;
     }
 };
 
-const updateUI = (hourlyWeatherData) => {
+
+const updateWeatherUI = (hourlyWeatherData, city) => {
     const weatherContainer = document.getElementById('weather-container');
     weatherContainer.innerHTML = '';
 
@@ -57,7 +64,22 @@ const updateUI = (hourlyWeatherData) => {
     } else {
         console.error('Données météorologiques manquantes ou malformatées:', hourlyWeatherData);
     }
+    const cityBackgrounds = {
+        'Saint-Étienne': 'url(Images/Saint_Etienne.webp)',
+        'Lyon': 'url(Images/Lyon.jpeg)',
+        'Marseille': 'url(Images/Marseille.jpg)',
+        'Paris': 'url(Images/Paris.webp)'
+    };
+    // Mise à jour de l'image de fond en fonction de la ville
+    const body = document.body;
+    if (cityBackgrounds[city]) {
+        body.style.backgroundImage = cityBackgrounds[city];
+    } else {
+        body.style.backgroundImage = 'url(Images/image_default.jpg)';
+    }
 };
+
+
 
 const getCoordinates = async (city) => {
     return cities[city];
@@ -78,22 +100,25 @@ document.getElementById('location-form').addEventListener('submit', async functi
 });
 
 // Ajout de la fonction pour changer la ville
-const changeCity = async (city) => {
-    try {
-        const { lat, lon } = await getCoordinates(city);
-        getWeatherForecast(lat, lon);
-        updateCityName(city);
-    } catch (error) {
-        console.error(error.message);
-    }
-};
-
 const updateCityName = (city) => {
     const cityNameElement = document.getElementById('cityName');
     if (cityNameElement) {
         cityNameElement.innerText = city;
     }
 };
+
+const changeCity = async (city) => {
+    try {
+        const { lat, lon } = await getCoordinates(city);
+        const weatherData = await getWeatherForecast(lat, lon);
+        updateWeatherUI(weatherData, city);
+        updateCityName(city);
+    } catch (error) {
+        console.error(error.message);
+    }
+};
+
+
 
 // Mettez à jour l'horloge toutes les secondes
 const updateClock = () => {
@@ -133,3 +158,6 @@ document.getElementById('btnSaintEtienne').classList.add('round-button', 'gray-b
 document.getElementById('btnLyon').classList.add('round-button', 'gray-button');
 document.getElementById('btnMarseille').classList.add('round-button', 'gray-button');
 document.getElementById('btnParis').classList.add('round-button', 'gray-button');
+
+
+

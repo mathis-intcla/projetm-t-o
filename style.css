@@ -16,13 +16,13 @@ body {
 
 h1 {
     text-align: center;
-    color: #3498db;
+    color: #333333;
 }
 
 .weather-container {
     max-width: 600px;
     margin: 20px auto;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.7);;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -90,5 +90,10 @@ h1 {
 /* Effet de hover pour les boutons */
 .round-button:hover {
     background-color: #606060; /* Gris foncé pour le hover */
+}
+
+body {
+    background-size: cover; /* Assure que l'image de fond couvre toute la page */
+    background-attachment: fixed; /* Empêche le défilement de l'image de fond */
 }
 
