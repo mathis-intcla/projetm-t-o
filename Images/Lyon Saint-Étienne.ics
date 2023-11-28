@@ -1,0 +1,30 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+PRODID:vsa-calendar
+METHOD:PUBLISH
+X-PUBLISHED-TTL:PT1H
+BEGIN:VEVENT
+UID:P45AJU20231125T045400
+SUMMARY:Lyon Part-Dieu - Saint-Étienne Châteaucreux
+DTSTAMP:20231125T165400
+DTSTART:20231125T165400
+DTEND:20231125T174000
+DESCRIPTION:Votre voyage\n1 Voyageur\n\n    Lyon Part-Dieu -> Saint-Étienne Châteaucreux\n    Départ le samedi 25 nov., 16:54\n    Arrivée à 17:40\n    Durée : 46 min\n    TER 886734\n    Placement Libre\n\n\nRéférences : P45AJU - INTERNICOLA\nAccéder à mon voyage :\nhttps://sncf-connect.com/app/redirect?tripId=259a7b3f-2086-430c-befc-3cfd6e6cd979&redirection_type=TRIP_IMPORT
+LOCATION:Lyon Part-Dieu
+URL:https://sncf-connect.com/app/redirect?tripId=259a7b3f-2086-430c-befc-3cfd6e6cd979&redirection_type=TRIP_IMPORT
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+REPEAT:1
+DESCRIPTION:Lyon Part-Dieu - Saint-Étienne Châteaucreux
+DURATION:PT3H
+TRIGGER:-PT4H
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Lyon Part-Dieu - Saint-Étienne Châteaucreux
+TRIGGER:-PT1H
+END:VALARM
+END:VEVENT
+END:VCALENDAR

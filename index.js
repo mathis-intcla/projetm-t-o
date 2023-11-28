@@ -1,8 +1,7 @@
 // index.js
 import axios from 'axios';
 
-
-
+// Define the coordinates of various cities
 const cities = {
     'Saint-Étienne': { lat: 45.4339, lon: 4.39 },
     'Lyon': { lat: 45.75, lon: 4.85 },
@@ -12,8 +11,7 @@ const cities = {
     'Commelle-Vernay': { lat: 45.9667, lon: 4.05 },
 };
 
-
-
+// Function to fetch weather forecast data from the API
 const getWeatherForecast = async (latitude, longitude) => {
     const apiUrl = `https://api.open-meteo.com/v1/meteofrance?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin`;
 
@@ -32,7 +30,7 @@ const getWeatherForecast = async (latitude, longitude) => {
     }
 };
 
-
+// Function to update the UI with weather information
 const updateWeatherUI = (hourlyWeatherData, city) => {
     const weatherContainer = document.getElementById('weather-container');
     weatherContainer.innerHTML = '';
@@ -45,16 +43,19 @@ const updateWeatherUI = (hourlyWeatherData, city) => {
         hourlyWeatherData.relative_humidity_2m &&
         hourlyWeatherData.precipitation
     ) {
+        // Extract weather data for the current hour
         const temperatureAtTargetTime = hourlyWeatherData.temperature_2m[currentHour];
         const windSpeedAtTargetTime = hourlyWeatherData.wind_speed_10m[currentHour];
         const humidityAtTargetTime = hourlyWeatherData.relative_humidity_2m[currentHour];
         const precipitationAtTargetTime = hourlyWeatherData.precipitation[currentHour];
         const temperature_2m_max = Math.max(...hourlyWeatherData.temperature_2m);
         const temperature_2m_min = Math.min(...hourlyWeatherData.temperature_2m);
-        const données = document.createElement('div');
-        données.classList.add('weather-info');
-        données.innerHTML = `
-            <p>Temperature à l'heure actuelle : <i class="fas fa-thermometer-half"></i> ${temperatureAtTargetTime} °C.</p>
+
+        // Create HTML elements to display weather information
+        const weatherInfo = document.createElement('div');
+        weatherInfo.classList.add('weather-info');
+        weatherInfo.innerHTML = `
+            <p>Temperature à l'heure actuelle : <i class="fa-solid fa-temperature-half fa-fade"></i> ${temperatureAtTargetTime} °C.</p>
             <p>Température maximale : <i class="fas fa-temperature-high"></i> ${temperature_2m_max} °C.</p>
             <p>Température minimale : <i class="fas fa-temperature-low"></i> ${temperature_2m_min} °C.</p>
             <p>Vitesse du vent à l'heure actuelle : <i class="fas fa-wind"></i> ${windSpeedAtTargetTime} km/h.</p>
@@ -62,10 +63,13 @@ const updateWeatherUI = (hourlyWeatherData, city) => {
             <p>Précipitations à l'heure actuelle : <i class="fas fa-cloud-showers-heavy"></i> ${precipitationAtTargetTime} mm.</p>
         `;
 
-        weatherContainer.appendChild(données);
+        // Append the weather information to the container
+        weatherContainer.appendChild(weatherInfo);
     } else {
-        console.error('Données météorologiques manquantes ou malformatées:', hourlyWeatherData);
+        console.error('Missing or malformed weather data:', hourlyWeatherData);
     }
+
+    // Update the background image based on the selected city
     const cityBackgrounds = {
         'Saint-Étienne': 'url(Images/Saint_Etienne.webp)',
         'Lyon': 'url(Images/Lyon.jpeg)',
@@ -74,21 +78,16 @@ const updateWeatherUI = (hourlyWeatherData, city) => {
         'Bourg-en-Bresse': 'url(Images/Bourg.jpg)',
         'Commelle-Vernay': 'url(Images/Commelle.jpeg)',
     };
-    // Mise à jour de l'image de fond en fonction de la ville
     const body = document.body;
-    if (cityBackgrounds[city]) {
-        body.style.backgroundImage = cityBackgrounds[city];
-    } else {
-        body.style.backgroundImage = 'url(Images/image_default.jpg)';
-    }
+    body.style.backgroundImage = cityBackgrounds[city] || 'url(Images/image_default.jpg)';
 };
 
-
-
+// Function to get coordinates for a given city
 const getCoordinates = async (city) => {
     return cities[city];
 };
 
+// Event listener for the location form submission
 document.getElementById('location-form').addEventListener('submit', async function (event) {
     event.preventDefault();
 
@@ -103,7 +102,7 @@ document.getElementById('location-form').addEventListener('submit', async functi
     }
 });
 
-// Ajout de la fonction pour changer la ville
+// Function to update the displayed city name
 const updateCityName = (city) => {
     const cityNameElement = document.getElementById('cityName');
     if (cityNameElement) {
@@ -111,6 +110,7 @@ const updateCityName = (city) => {
     }
 };
 
+// Function to change the city and update weather information
 const changeCity = async (city) => {
     try {
         const { lat, lon } = await getCoordinates(city);
@@ -122,9 +122,7 @@ const changeCity = async (city) => {
     }
 };
 
-
-
-// Mettez à jour l'horloge toutes les secondes
+// Update the clock every second
 const updateClock = () => {
     const clockElement = document.getElementById('clock');
     if (clockElement) {
@@ -135,12 +133,12 @@ const updateClock = () => {
 
 setInterval(updateClock, 1000);
 
-// Initialiser la météo pour Saint-Étienne au chargement de la page
+// Initialize the weather for Saint-Étienne on page load
 document.addEventListener('DOMContentLoaded', function () {
     changeCity('Saint-Étienne');
 });
 
-// Ajouter des gestionnaires d'événements pour les boutons de ville
+// Add event handlers for city buttons
 document.getElementById('btnSaintEtienne').addEventListener('click', function () {
     changeCity('Saint-Étienne');
 });
@@ -165,13 +163,10 @@ document.getElementById('btnCommelleVernay').addEventListener('click', function 
     changeCity('Commelle-Vernay');
 });
 
-// Ajouter des classes aux boutons pour les styles
+// Add classes to the buttons for styling
 document.getElementById('btnSaintEtienne').classList.add('round-button', 'gray-button');
 document.getElementById('btnLyon').classList.add('round-button', 'gray-button');
 document.getElementById('btnMarseille').classList.add('round-button', 'gray-button');
 document.getElementById('btnParis').classList.add('round-button', 'gray-button');
 document.getElementById('btnBourgEnBresse').classList.add('round-button', 'gray-button');
 document.getElementById('btnCommelleVernay').classList.add('round-button', 'gray-button');
-
-
-

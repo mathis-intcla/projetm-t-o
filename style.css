@@ -77,6 +77,11 @@ h1 {
     text-align: center;
 }
 
+#autre-buttons-container {
+    text-align: center;
+}
+
+
 /* Ajouter un peu d'espace entre les boutons */
 .round-button + .round-button {
     margin-left: 10px;
